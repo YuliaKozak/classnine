@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інформаційна Безпека | Інтерактивний Тренажер 9 Клас</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f5ff',
+                            100: '#e0ebff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            pink: '#ec4899',
+                            purple: '#8b5cf6',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Comfortaa', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        }
+
+        .card-glow {
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15), 0 8px 10px -6px rgba(99, 102, 241, 0.1);
+        }
+
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front,
+        .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-heading font-bold text-lg text-slate-900 leading-tight">КіберЗахист</h1>
+                    <p class="text-xs text-slate-500">Інформаційна безпека в мережі</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex gap-1 bg-slate-100 p-1 rounded-xl text-sm font-medium">
+                <button onclick="switchTab('terms')" id="tab-btn-terms"
+                    class="tab-btn px-4 py-2 rounded-lg transition-all bg-white text-indigo-600 shadow-sm">
+                    <i class="fa-solid fa-book-bookmark mr-2"></i>Терміни
+                </button>
+                <button onclick="switchTab('simulator')" id="tab-btn-simulator"
+                    class="tab-btn px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-indigo-600">
+                    <i class="fa-solid fa-user-shield mr-2"></i>Симулятор
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-btn-quiz"
+                    class="tab-btn px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-indigo-600">
+                    <i class="fa-solid fa-graduation-cap mr-2"></i>Тестування
+                </button>
+                <button onclick="switchTab('results')" id="tab-btn-results"
+                    class="tab-btn px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-indigo-600">
+                    <i class="fa-solid fa-award mr-2"></i>Підсумки
+                </button>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <div
+                    class="bg-indigo-50 border border-indigo-100 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <span id="global-score">Бали: 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation bar -->
+        <div class="flex md:hidden border-t border-slate-200 bg-white justify-around py-2 text-xs">
+            <button onclick="switchTab('terms')" id="mob-tab-terms"
+                class="flex flex-col items-center gap-1 text-indigo-600 font-semibold">
+                <i class="fa-solid fa-book-bookmark text-base"></i>Терміни
+            </button>
+            <button onclick="switchTab('simulator')" id="mob-tab-simulator"
+                class="flex flex-col items-center gap-1 text-slate-500">
+                <i class="fa-solid fa-user-shield text-base"></i>Симулятор
+            </button>
+            <button onclick="switchTab('quiz')" id="mob-tab-quiz"
+                class="flex flex-col items-center gap-1 text-slate-500">
+                <i class="fa-solid fa-graduation-cap text-base"></i>Тест
+            </button>
+            <button onclick="switchTab('results')" id="mob-tab-results"
+                class="flex flex-col items-center gap-1 text-slate-500">
+                <i class="fa-solid fa-award text-base"></i>Підсумки
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full px-4 py-6 flex-grow">
+
+        <!-- SECTION 1: FLASHCARDS / TERMS -->
+        <section id="section-terms" class="tab-content block space-y-6">
+            <div
+                class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center md:text-left">
+                    <span
+                        class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">Модуль
+                        1</span>
+                    <h2 class="text-2xl md:text-3xl font-heading font-bold">Ключові поняття безпеки</h2>
+                    <p class="text-indigo-100 text-sm max-w-xl">
+                        Опануйте основні терміни з теми "Інформаційна безпека". Натисніть на картку, щоб дізнатися її
+                        значення!
+                    </p>
+                </div>
+                <div
+                    class="bg-white/10 p-4 rounded-2xl backdrop-blur-md flex items-center justify-center min-w-[120px]">
+                    <i class="fa-solid fa-key text-5xl text-yellow-300"></i>
+                </div>
+            </div>
+
+            <!-- Terms Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="terms-grid">
+                <!-- Javascript will populate interactive cards here -->
+            </div>
+
+            <!-- Matching Mini Game -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 card-glow space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-heading font-bold text-lg text-slate-900"><i
+                                class="fa-solid fa-puzzle-piece text-indigo-500 mr-2"></i>Міні-гра: Знайди пару</h3>
+                        <p class="text-xs text-slate-500">З’єднайте термін із правильним описом</p>
+                    </div>
+                    <button onclick="resetMatchingGame()"
+                        class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                        <i class="fa-solid fa-rotate-right mr-1"></i>Скинути
+                    </button>
+                </div>
+
+                <div id="matching-game-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <!-- Dynamic matching content -->
+                </div>
+                <div id="matching-feedback"
+                    class="hidden p-3 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-semibold text-center border border-emerald-200">
+                    <i class="fa-solid fa-circle-check mr-1"></i> Відмінно! Всі пари знайдено вірно! (+20 балів)
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SIMULATOR GAME -->
+        <section id="section-simulator" class="tab-content hidden space-y-6">
+            <div
+                class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center md:text-left">
+                    <span
+                        class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">Модуль
+                        2</span>
+                    <h2 class="text-2xl md:text-3xl font-heading font-bold">Симулятор: Безпечно чи Небезпечно?</h2>
+                    <p class="text-teal-100 text-sm max-w-xl">
+                        Проаналізуйте ситуації з мережевого життя. Розпізнайте фішинг, спам та загрози безпеці!
+                    </p>
+                </div>
+                <div
+                    class="bg-white/10 p-4 rounded-2xl backdrop-blur-md flex items-center justify-center min-w-[120px]">
+                    <i class="fa-solid fa-user-ninja text-5xl text-emerald-300"></i>
+                </div>
+            </div>
+
+            <!-- Interactive Scenario Card -->
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl border border-slate-200 card-glow overflow-hidden">
+                <!-- Header / Progress bar -->
+                <div class="bg-slate-100 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500" id="sim-counter">Ситуація 1
+                        з 5</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-500">Точність:</span>
+                        <span class="text-xs font-bold text-slate-800" id="sim-accuracy">100%</span>
+                    </div>
+                </div>
+
+                <!-- Scenario Content Area -->
+                <div class="p-6 space-y-4">
+                    <div id="sim-scenario-box" class="min-h-[160px] flex flex-col justify-center">
+                        <!-- Scenario rendered here -->
+                    </div>
+
+                    <!-- Options / Buttons -->
+                    <div id="sim-actions" class="grid grid-cols-2 gap-4 pt-4">
+                        <button onclick="handleSimChoice(true)"
+                            class="py-3 px-4 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shield-check"></i> Безпечно
+                        </button>
+                        <button onclick="handleSimChoice(false)"
+                            class="py-3 px-4 rounded-xl font-bold bg-rose-500 hover:bg-rose-600 text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Небезпечно
+                        </button>
+                    </div>
+
+                    <!-- Feedback Note -->
+                    <div id="sim-feedback" class="hidden p-4 rounded-xl border text-sm leading-relaxed space-y-2">
+                        <p id="sim-feedback-text" class="font-medium"></p>
+                        <button onclick="nextSimScenario()"
+                            class="mt-2 text-xs bg-slate-800 text-white px-4 py-2 rounded-lg font-semibold hover:bg-slate-700">
+                            Наступна ситуація <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: QUIZ -->
+        <section id="section-quiz" class="tab-content hidden space-y-6">
+            <div
+                class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center md:text-left">
+                    <span
+                        class="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">Модуль
+                        3</span>
+                    <h2 class="text-2xl md:text-3xl font-heading font-bold">Підсумковий Тест</h2>
+                    <p class="text-purple-100 text-sm max-w-xl">
+                        Перевірте свої знання за 5 основними напрямами теми. Дайте відповіді та отримайте підсумкову
+                        оцінку!
+                    </p>
+                </div>
+                <div
+                    class="bg-white/10 p-4 rounded-2xl backdrop-blur-md flex items-center justify-center min-w-[120px]">
+                    <i class="fa-solid fa-pen-ruler text-5xl text-pink-300"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 card-glow max-w-3xl mx-auto space-y-6">
+                <!-- Quiz Progress Bar -->
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-slate-500">
+                        <span id="quiz-question-number">Питання 1 з 5</span>
+                        <span id="quiz-progress-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                        <div id="quiz-progress-bar"
+                            class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-0 transition-all duration-300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Container -->
+                <div id="quiz-container" class="space-y-4">
+                    <h3 id="quiz-question-text" class="text-lg font-bold text-slate-800"> Loading...</h3>
+                    <div id="quiz-options" class="space-y-3">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Explanation Box -->
+                <div id="quiz-explanation"
+                    class="hidden p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm space-y-1">
+                    <div id="quiz-result-header" class="font-bold"></div>
+                    <p id="quiz-explanation-text" class="text-slate-600"></p>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex justify-between items-center pt-2">
+                    <button id="quiz-prev-btn" onclick="prevQuestion()"
+                        class="hidden px-4 py-2 border border-slate-300 rounded-xl text-slate-600 font-semibold hover:bg-slate-50 text-sm">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Назад
+                    </button>
+                    <button id="quiz-next-btn" onclick="nextQuestion()"
+                        class="ml-auto px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold shadow-md hover:shadow-lg transition-all text-sm">
+                        Далі <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: RESULTS & CERTIFICATE -->
+        <section id="section-results" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 card-glow text-center space-y-6">
+                <div class="max-w-md mx-auto space-y-3">
+                    <div
+                        class="w-20 h-20 mx-auto rounded-full bg-amber-100 text-amber-500 flex items-center justify-center text-4xl shadow-inner">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h2 class="text-2xl font-heading font-bold text-slate-800">Ваш підсумковий результат</h2>
+                    <p class="text-sm text-slate-500">Результати засвоєння теми "Інформаційна безпека"</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="text-slate-400 text-xs mb-1">Загальні бали</div>
+                        <div class="text-2xl font-bold text-indigo-600" id="res-total-score">0</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="text-slate-400 text-xs mb-1">Правильні відповіді</div>
+                        <div class="text-2xl font-bold text-emerald-600" id="res-quiz-score">0 / 5</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="text-slate-400 text-xs mb-1">Симулятор безпеки</div>
+                        <div class="text-2xl font-bold text-teal-600" id="res-sim-score">0 / 5</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div class="text-slate-400 text-xs mb-1">Рівень знань</div>
+                        <div class="text-base font-bold text-purple-600" id="res-level">Початковий</div>
+                    </div>
+                </div>
+
+                <!-- Certificate Box -->
+                <div
+                    class="max-w-xl mx-auto bg-slate-900 text-white rounded-2xl p-6 text-left relative overflow-hidden border-4 border-amber-400 shadow-2xl">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-shield-halved text-9xl text-white"></i>
+                    </div>
+                    <div class="space-y-4 relative z-10">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">Сертифікат
+                                    досягнення</span>
+                                <h3 class="text-xl font-heading font-bold text-white">Фахівець з Кібербезпеки</h3>
+                            </div>
+                            <i class="fa-solid fa-certificate text-3xl text-amber-400"></i>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Підтверджує успішне проходження інтерактивного тренажера з теми <b>"Інформаційна
+                                безпека"</b> для учнів 9 класу.
+                        </p>
+                        <div
+                            class="pt-2 flex justify-between items-end border-t border-slate-800 text-xs text-slate-400">
+                            <div>Учень: <span class="text-white font-semibold" id="cert-student-name">Учень 9
+                                    класу</span></div>
+                            <div id="cert-date">Дата: --.--.----</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="flex justify-center gap-4 pt-2">
+                    <button onclick="promptStudentName()"
+                        class="px-4 py-2 border border-slate-300 hover:bg-slate-50 rounded-xl text-slate-700 font-semibold text-sm">
+                        <i class="fa-solid fa-user-pen mr-2"></i> Вказати ім'я
+                    </button>
+                    <button onclick="window.print()"
+                        class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md text-sm">
+                        <i class="fa-solid fa-print mr-2"></i> Друкувати сертифікат
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
+            <p>© Інтерактивний навчальний тренажер для учнів 9 класу. Інформатика.</p>
+            <p class="text-slate-400">Зроблено з любов'ю до навчання <i class="fa-solid fa-heart text-rose-500"></i></p>
+        </div>
+    </footer>
+
+    <script>
+        // Global App State
+        const state = {
+            score: 0,
+            termPairsFound: 0,
+            simCorrectCount: 0,
+            simCurrentIndex: 0,
+            quizCurrentIndex: 0,
+            quizAnswers: {},
+            quizScore: 0,
+            studentName: 'Учень 9 класу'
+        };
+
+        // DATA: Terms & Flashcards
+        const termsData = [
+            {
+                term: "Інформаційна безпека",
+                icon: "fa-shield-virus",
+                color: "from-blue-500 to-indigo-600",
+                desc: "Захищеність даних та інформаційної системи від випадкових або навмисних посягань."
+            },
+            {
+                term: "Брандмауер (Firewall)",
+                icon: "fa-fire-wall",
+                color: "from-amber-500 to-orange-600",
+                desc: "Мережевий екран, що контролює і фільтрує вхідний і вихідний мережевий трафік."
+            },
+            {
+                term: "Антивірус",
+                icon: "fa-bug-slash",
+                color: "from-emerald-500 to-teal-600",
+                desc: "Спеціалізована програма для виявлення, видалення та нейтралізації шкідливих програм."
+            },
+            {
+                term: "Фішинг",
+                icon: "fa-fish-fins",
+                color: "from-rose-500 to-pink-600",
+                desc: "Вид інтернет-шахрайства з метою отримання секретних даних (паролів, карток) через підроблені сайти."
+            },
+            {
+                term: "Спам",
+                icon: "fa-envelope-open-text",
+                color: "from-purple-500 to-violet-600",
+                desc: "Масова розсилка незапитуваних повідомлень рекламного або шахрайського характеру."
+            },
+            {
+                term: "HTTPS / SSL",
+                icon: "fa-lock",
+                color: "from-cyan-500 to-blue-600",
+                desc: "Захищений протокол передачі даних, що шифрує з'єднання між браузером і сайтом."
+            }
+
+        ];
+
+        // DATA: Matching Pairs Game
+        const matchingPairs = [
+            { id: 1, term: "Брандмауер", def: "Захисний бар'єр між комп'ютером і мережею" },
+            { id: 2, term: "Фішинг", def: "Крадіжка паролів через несправжні сайти" },
+            { id: 3, term: "Антивірус", def: "Програма для знешкодження вірусів" },
+            { id: 4, term: "Спам", def: "Небажані масові розсилки повідомлень" }
+        ];
+
+        // DATA: Simulator Scenarios
+        const simScenarios = [
+            {
+                title: "SMS від банку",
+                content: `<div class="bg-slate-100 p-4 rounded-xl border border-slate-300 font-mono text-xs space-y-2">
+                            <div class="font-bold text-slate-700"><i class="fa-solid fa-comment-sms text-indigo-500 mr-2"></i>SMS від: +38099XXXXXXX</div>
+                            <p>"Вашу картку заблоковано! Для розблокування терміново перейдіть за посиланням: <u>http://bank-pivden-verify.xyz/login</u>"</p>
+                          </div>`,
+                isSafe: false,
+                explanation: "Це класичний фішинг! Банки ніколи не надсилають посилання на сумнівні домени (.xyz) із проханням ввести паролі."
+            },
+            {
+                title: "Безпечне з'єднання сайту",
+                content: `<div class="bg-slate-100 p-4 rounded-xl border border-slate-300 font-mono text-xs space-y-2">
+                            <div class="flex items-center gap-2 bg-white p-2 rounded border border-slate-200">
+                                <i class="fa-solid fa-lock text-emerald-600"></i>
+                                <span class="text-emerald-700 font-bold">https://</span>
+                                <span class="text-slate-800">classroom.google.com</span>
+                            </div>
+                            <p class="text-slate-500">Адресний рядок браузера відображає значок замка та протокол HTTPS.</p>
+                          </div>`,
+                isSafe: true,
+                explanation: "Це безпечний сайт! Наявність HTTPS та іконки замка гарантує зашифроване з'єднання."
+            },
+            {
+                title: "Повідомлення від 'друга' у соцмережі",
+                content: `<div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 font-mono text-xs space-y-2">
+                            <div class="font-bold text-indigo-900"><i class="fa-solid fa-user-circle mr-2"></i>Максим (Один клас):</div>
+                            <p>"Привіт! Позич 500 грн до завтра, терміново треба! Перекажи на картку 4149... Благаю, не дзвони, я на уроці!"</p>
+                          </div>`,
+                isSafe: false,
+                explanation: "Небезпека! Акаунт друга міг бути зламаний. Прохання 'не дзвонити' — часта ознака шахрайства. Перетелефонуйте другу особисто!"
+            },
+            {
+                title: "Оновлення антивіруса",
+                content: `<div class="bg-slate-100 p-4 rounded-xl border border-slate-300 font-mono text-xs space-y-2">
+                            <div class="font-bold text-slate-800"><i class="fa-solid fa-shield-halved text-blue-600 mr-2"></i>Офіційна програма Антивірус</div>
+                            <p>"Доступне планове оновлення вірусних баз даних. Завантаження з офіційного сервера розробника."</p>
+                          </div>`,
+                isSafe: true,
+                explanation: "Це безпечно! Систематичне оновлення антивірусних баз даних з офіційного джерела є запорукою кібербезпеки."
+            },
+            {
+                title: "Виграш у лотерею",
+                content: `<div class="bg-amber-50 p-4 rounded-xl border border-amber-200 font-mono text-xs space-y-2">
+                            <div class="font-bold text-amber-900"><i class="fa-solid fa-gift mr-2"></i>Вспливаюче вікно на сайті:</div>
+                            <p>"Вітаємо! Ви стали 1000-м відвідувачем і виграли iPhone! Щоб забрати приз, введіть свій номер телефону та CVV-код картки!"</p>
+                          </div>`,
+                isSafe: false,
+                explanation: "Небезпечно! Це шахрайство (скам). Ніколи не вводьте платіжні дані або номер телефону на сумнівних банерах."
+            }
+        ];
+
+        // DATA: Quiz Questions
+        const quizQuestions = [
+            {
+                question: "Яку головну функцію виконує брандмауер (мережевий екран)?",
+                options: [
+                    "Очищає комп'ютер від пилу та перегріву",
+                    "Контролює та фільтрує вхідний і вихідний мережевий трафік",
+                    "Автоматично видаляє спам з поштової скриньки",
+                    "Прискорює швидкість завантаження сайтів"
+                ],
+                correct: 1,
+                explanation: "Брандмауер виступає захисним бар'єром між вашим пристроєм та зовнішньою мережею, блокуючи підозрілі з'єднання."
+            },
+            {
+                question: "Що з переліченого є прикладом етичної поведінки в інтернеті (мережевого етикету)?",
+                options: [
+                    "Публікація чужих приватних фотографій без дозволу",
+                    "Використання заглавних літер (CAPS LOCK) для вираження агресії",
+                    "Повага до чужої думки та відсутність образ у коментарях",
+                    "Розповсюдження неперевірених чуток про однокласників"
+                ],
+                correct: 2,
+                explanation: "Етична поведінка в мережі (мережевий етикет) передбачає взаємоповагу, ввічливість та дотримання приватності інших."
+            },
+            {
+                question: "Як розпізнати фішингове повідомлення?",
+                options: [
+                    "Воно завжди містить красиві анімації",
+                    "Воно часто закликає терміново діяти та містить сумнівне посилання для введення паролів",
+                    "Воно надходить тільки від відомих вам контактів",
+                    "Воно автоматично вимикає ваш монітор"
+                ],
+                correct: 1,
+                explanation: "Фішинг зазвичай використовує залякування або спокусу, створення відчуття терміновості та підроблені лінки."
+            },
+            {
+                question: "Який символ або протокол в адресному рядку свідчить про захищене шифроване з'єднання?",
+                options: [
+                    "HTTP та червоний хрестик",
+                    "HTTPS та значок закритого замка",
+                    "Протокол FTP",
+                    "Значок знаку оклику"
+                ],
+                correct: 1,
+                explanation: "HTTPS (HyperText Transfer Protocol Secure) гарантує, що дані між вами та сайтом передаються у зашифрованому вигляді."
+            },
+            {
+                question: "Яке правило є найважливішим для створення надійного пароля?",
+                options: [
+                    "Використовувати дату свого народження або ім'я",
+                    "Використовувати один і той самий пароль для всіх сайтів",
+                    "Пароль має містити понад 8 символів, букви різного регістру, цифри та спецсимволи",
+                    "Записати пароль на наліпці і приклеїти на монітор"
+                ],
+                correct: 2,
+                explanation: "Складний унікальний пароль з комбінацією букв, цифр і знаків суттєво знижує ризик зламу вашого акаунту."
+            }
+        ];
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTerms();
+            renderMatchingGame();
+            renderSimScenario();
+            renderQuizQuestion();
+            updateDate();
+        });
+
+        function updateDate() {
+            const dateStr = new Date().toLocaleDateString('uk-UA');
+            document.getElementById('cert-date').innerText = `Дата: ${dateStr}`;
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+            // Update tab styles (Desktop)
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                btn.classList.add('text-slate-600');
+            });
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            // Update tab styles (Mobile)
+            document.querySelectorAll('[id^="mob-tab-"]').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'font-semibold');
+                btn.classList.add('text-slate-500');
+            });
+            const activeMobBtn = document.getElementById(`mob-tab-${tabId}`);
+            if (activeMobBtn) {
+                activeMobBtn.classList.add('text-indigo-600', 'font-semibold');
+                activeMobBtn.classList.remove('text-slate-500');
+            }
+
+            if (tabId === 'results') {
+                updateResultsDashboard();
+            }
+        }
+
+        function addScore(points) {
+            state.score += points;
+            document.getElementById('global-score').innerText = `Бали: ${state.score}`;
+        }
+
+        // Section 1: Terms Cards Renderer
+        function renderTerms() {
+            const grid = document.getElementById('terms-grid');
+            grid.innerHTML = termsData.map((item, idx) => `
+                <div class="flip-card h-48 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- Front -->
+                        <div class="flip-card-front bg-white p-5 border border-slate-200 card-glow flex flex-col justify-between items-center text-center">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr ${item.color} text-white flex items-center justify-center text-2xl shadow-md">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                            <h4 class="font-heading font-bold text-slate-800 text-base">${item.term}</h4>
+                            <span class="text-xs text-indigo-500 font-medium"><i class="fa-solid fa-rotate mr-1"></i> Натисніть, щоб перевернути</span>
+                        </div>
+                        <!-- Back -->
+                        <div class="flip-card-back bg-slate-900 text-white p-5 flex flex-col justify-center items-center text-center space-y-2">
+                            <h5 class="text-xs text-amber-400 font-bold uppercase tracking-wider">${item.term}</h5>
+                            <p class="text-xs leading-relaxed text-slate-200">${item.desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Section 1: Matching Game Logic
+        let selectedTerm = null;
+        let selectedDef = null;
+
+        function renderMatchingGame() {
+            const container = document.getElementById('matching-game-container');
+
+            // Shuffle arrays
+            const terms = [...matchingPairs].sort(() => Math.random() - 0.5);
+            const defs = [...matchingPairs].sort(() => Math.random() - 0.5);
+
+            container.innerHTML = `
+                <div class="space-y-2" id="terms-column">
+                    ${terms.map(t => `
+                        <button onclick="selectMatch('term', ${t.id}, this)" id="term-btn-${t.id}" class="match-btn w-full p-3 text-left text-xs font-semibold rounded-xl border border-slate-200 hover:border-indigo-400 bg-slate-50 transition-all">
+                            ${t.term}
+                        </button>
+                    `).join('')}
+                </div>
+                <div class="space-y-2" id="defs-column">
+                    ${defs.map(d => `
+                        <button onclick="selectMatch('def', ${d.id}, this)" id="def-btn-${d.id}" class="match-btn w-full p-3 text-left text-xs text-slate-600 rounded-xl border border-slate-200 hover:border-indigo-400 bg-slate-50 transition-all">
+                            ${d.def}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectMatch(type, id, el) {
+            if (type === 'term') {
+                document.querySelectorAll('#terms-column .match-btn').forEach(b => b.classList.remove('border-indigo-600', 'bg-indigo-50'));
+                el.classList.add('border-indigo-600', 'bg-indigo-50');
+                selectedTerm = id;
+            } else {
+                document.querySelectorAll('#defs-column .match-btn').forEach(b => b.classList.remove('border-indigo-600', 'bg-indigo-50'));
+                el.classList.add('border-indigo-600', 'bg-indigo-50');
+                selectedDef = id;
+            }
+
+            if (selectedTerm && selectedDef) {
+                if (selectedTerm === selectedDef) {
+                    // Correct Match
+                    document.getElementById(`term-btn-${selectedTerm}`).classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-300', 'pointer-events-none');
+                    document.getElementById(`def-btn-${selectedDef}`).classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-300', 'pointer-events-none');
+                    state.termPairsFound++;
+                    addScore(5);
+
+                    if (state.termPairsFound === matchingPairs.length) {
+                        document.getElementById('matching-feedback').classList.remove('hidden');
+                    }
+                } else {
+                    // Wrong Match
+                    const tBtn = document.getElementById(`term-btn-${selectedTerm}`);
+                    const dBtn = document.getElementById(`def-btn-${selectedDef}`);
+                    tBtn.classList.add('bg-rose-100', 'border-rose-300');
+                    dBtn.classList.add('bg-rose-100', 'border-rose-300');
+                    setTimeout(() => {
+                        tBtn.classList.remove('bg-rose-100', 'border-rose-300', 'border-indigo-600', 'bg-indigo-50');
+                        dBtn.classList.remove('bg-rose-100', 'border-rose-300', 'border-indigo-600', 'bg-indigo-50');
+                    }, 800);
+                }
+                selectedTerm = null;
+                selectedDef = null;
+            }
+        }
+
+        function resetMatchingGame() {
+            state.termPairsFound = 0;
+            selectedTerm = null;
+            selectedDef = null;
+            document.getElementById('matching-feedback').classList.add('hidden');
+            renderMatchingGame();
+        }
+
+        // Section 2: Simulator Game Logic
+        function renderSimScenario() {
+            const sc = simScenarios[state.simCurrentIndex];
+            document.getElementById('sim-counter').innerText = `Ситуація ${state.simCurrentIndex + 1} з ${simScenarios.length}`;
+
+            const box = document.getElementById('sim-scenario-box');
+            box.innerHTML = `
+                <h4 class="font-bold text-slate-800 text-base mb-3">${sc.title}</h4>
+                ${sc.content}
+            `;
+
+            document.getElementById('sim-actions').classList.remove('hidden');
+            document.getElementById('sim-feedback').classList.add('hidden');
+        }
+
+        function handleSimChoice(userSaidSafe) {
+            const sc = simScenarios[state.simCurrentIndex];
+            const isCorrect = (userSaidSafe === sc.isSafe);
+
+            const feedbackBox = document.getElementById('sim-feedback');
+            const feedbackText = document.getElementById('sim-feedback-text');
+
+            document.getElementById('sim-actions').classList.add('hidden');
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                state.simCorrectCount++;
+                addScore(10);
+                feedbackBox.className = "p-4 rounded-xl border text-sm leading-relaxed space-y-2 bg-emerald-50 border-emerald-200 text-emerald-800";
+                feedbackText.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <b>Правильно!</b> ${sc.explanation}`;
+            } else {
+                feedbackBox.className = "p-4 rounded-xl border text-sm leading-relaxed space-y-2 bg-rose-50 border-rose-200 text-rose-800";
+                feedbackText.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> <b>Помилка!</b> ${sc.explanation}`;
+            }
+
+            const accuracy = Math.round((state.simCorrectCount / (state.simCurrentIndex + 1)) * 100);
+            document.getElementById('sim-accuracy').innerText = `${accuracy}%`;
+        }
+
+        function nextSimScenario() {
+            if (state.simCurrentIndex < simScenarios.length - 1) {
+                state.simCurrentIndex++;
+                renderSimScenario();
+            } else {
+                // Simulator completed
+                const box = document.getElementById('sim-scenario-box');
+                box.innerHTML = `
+                    <div class="text-center py-6 space-y-3">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h4 class="font-heading font-bold text-xl text-slate-800">Симулятор пройдено!</h4>
+                        <p class="text-sm text-slate-500">Ви успішно розібрали всі 5 сценаріїв інтернет-безпеки.</p>
+                    </div>
+                `;
+                document.getElementById('sim-actions').classList.add('hidden');
+                document.getElementById('sim-feedback').classList.add('hidden');
+            }
+        }
+
+        // Section 3: Quiz Logic
+        function renderQuizQuestion() {
+            const q = quizQuestions[state.quizCurrentIndex];
+
+            // Progress Bar
+            const percent = Math.round(((state.quizCurrentIndex + 1) / quizQuestions.length) * 100);
+            document.getElementById('quiz-question-number').innerText = `Питання ${state.quizCurrentIndex + 1} з ${quizQuestions.length}`;
+            document.getElementById('quiz-progress-percent').innerText = `${percent}%`;
+            document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+
+            // Question Text
+            document.getElementById('quiz-question-text').innerText = q.question;
+
+            // Options
+            const optionsContainer = document.getElementById('quiz-options');
+            const savedAnswer = state.quizAnswers[state.quizCurrentIndex];
+
+            optionsContainer.innerHTML = q.options.map((opt, idx) => {
+                let btnStyle = "bg-slate-50 border-slate-200 text-slate-700 hover:border-purple-300 hover:bg-purple-50/50";
+
+                if (savedAnswer !== undefined) {
+                    if (idx === q.correct) {
+                        btnStyle = "bg-emerald-100 border-emerald-400 text-emerald-900 font-semibold";
+                    } else if (savedAnswer === idx) {
+                        btnStyle = "bg-rose-100 border-rose-400 text-rose-900";
+                    } else {
+                        btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                    }
+                }
+
+                return `
+                    <button onclick="selectQuizOption(${idx})" ${savedAnswer !== undefined ? 'disabled' : ''} class="w-full p-4 text-left text-sm rounded-xl border transition-all flex items-center justify-between ${btnStyle}">
+                        <span>${opt}</span>
+                        ${savedAnswer !== undefined && idx === q.correct ? '<i class="fa-solid fa-circle-check text-emerald-600"></i>' : ''}
+                    </button>
+                `;
+            }).join('');
+
+            // Explanation box handling
+            const expBox = document.getElementById('quiz-explanation');
+            if (savedAnswer !== undefined) {
+                expBox.classList.remove('hidden');
+                const isCorrect = savedAnswer === q.correct;
+                document.getElementById('quiz-result-header').className = isCorrect ? "font-bold text-emerald-700" : "font-bold text-rose-700";
+                document.getElementById('quiz-result-header').innerText = isCorrect ? "Правильна відповідь!" : "Невірно!";
+                document.getElementById('quiz-explanation-text').innerText = q.explanation;
+            } else {
+                expBox.classList.add('hidden');
+            }
+
+            // Next / Prev buttons
+            document.getElementById('quiz-prev-btn').classList.toggle('hidden', state.quizCurrentIndex === 0);
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            if (state.quizCurrentIndex === quizQuestions.length - 1) {
+                nextBtn.innerText = "Завершити тест";
+            } else {
+                nextBtn.innerHTML = `Далі <i class="fa-solid fa-arrow-right ml-1"></i>`;
+            }
+        }
+
+        function selectQuizOption(optionIdx) {
+            const q = quizQuestions[state.quizCurrentIndex];
+            state.quizAnswers[state.quizCurrentIndex] = optionIdx;
+
+            if (optionIdx === q.correct) {
+                state.quizScore++;
+                addScore(15);
+            }
+
+            renderQuizQuestion();
+        }
+
+        function nextQuestion() {
+            if (state.quizCurrentIndex < quizQuestions.length - 1) {
+                state.quizCurrentIndex++;
+                renderQuizQuestion();
+            } else {
+                // End Quiz -> Go to Results
+                switchTab('results');
+            }
+        }
+
+        function prevQuestion() {
+            if (state.quizCurrentIndex > 0) {
+                state.quizCurrentIndex--;
+                renderQuizQuestion();
+            }
+        }
+
+        // Section 4: Results Calculator
+        function updateResultsDashboard() {
+            document.getElementById('res-total-score').innerText = state.score;
+            document.getElementById('res-quiz-score').innerText = `${state.quizScore} / ${quizQuestions.length}`;
+            document.getElementById('res-sim-score').innerText = `${state.simCorrectCount} / ${simScenarios.length}`;
+
+            // Calculate Knowledge Level
+            let level = "Початковий";
+            if (state.score >= 100) {
+                level = "Експерт безпеки 🛡️";
+            } else if (state.score >= 60) {
+                level = "Досвідчений користувач 💻";
+            } else if (state.score >= 30) {
+                level = "Початківець 🔰";
+            }
+            document.getElementById('res-level').innerText = level;
+        }
+
+        function promptStudentName() {
+            const name = prompt("Введіть ваше ім'я та прізвище для сертифіката:", state.studentName);
+            if (name && name.trim() !== "") {
+                state.studentName = name.trim();
+                document.getElementById('cert-student-name').innerText = state.studentName;
+            }
+        }
+    </script>
+</body>
+
+</html>
